@@ -1,51 +1,57 @@
 package com.fullstackapi.employeemanager.controller;
 
-
-import com.fullstackapi.employeemanager.model.Employee;
-import com.fullstackapi.employeemanager.service.EmployeeService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import static org.springframework.http.HttpStatus.CREATED;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.fullstackapi.employeemanager.model.Employee;
+import com.fullstackapi.employeemanager.service.EmployeeService;
+
+import lombok.AllArgsConstructor;
+
 @RestController
 @RequestMapping(path = "/employee")
+@AllArgsConstructor
 public class EmployeeController {
     private final EmployeeService employeeService;
 
-    public EmployeeController(EmployeeService employeeService) {
-        this.employeeService = employeeService;
-    }
-
     @GetMapping(path = "/all")
-    public ResponseEntity <List<Employee>> getAllEmployees(){
+    public ResponseEntity<List<Employee>> getAllEmployees() {
         List<Employee> employees = employeeService.getAllEmployees();
-        return new ResponseEntity<>(employees, HttpStatus.OK);
+        return ResponseEntity.ok(employees);
     }
 
     @GetMapping(path = "/employee/{id}")
-    public ResponseEntity <Employee> getEmployeeById(@PathVariable("id") Long id){
+    public ResponseEntity<Employee> getEmployeeById(@PathVariable("id") Long id) {
         Employee employee = employeeService.findEmployeeById(id);
-        return new ResponseEntity<>(employee, HttpStatus.OK);
+        return ResponseEntity.ok(employee);
     }
 
     @PostMapping(path = "/add")
-    public ResponseEntity<Employee> addEmployee(@RequestBody Employee employee){
+    public ResponseEntity<Employee> addEmployee(@RequestBody Employee employee) {
         Employee newEmployee = employeeService.addEmployee(employee);
-        return new ResponseEntity<>(newEmployee,HttpStatus.CREATED);
+        return ResponseEntity.status(CREATED.value()).body(newEmployee);
     }
 
     @PutMapping(path = "/update")
-    public ResponseEntity<Employee> updateEmployee(@RequestBody Employee employee){
+    public ResponseEntity<Employee> updateEmployee(@RequestBody Employee employee) {
         Employee updateEmployee = employeeService.updateEmployee(employee);
-        return new ResponseEntity<>(updateEmployee, HttpStatus.OK);
+        return ResponseEntity.ok(updateEmployee);
     }
 
-
     @DeleteMapping(path = "/delete/{id}")
-    public ResponseEntity<?> deleteEmployee(@PathVariable("id") Long id){
+    public ResponseEntity<?> deleteEmployee(@PathVariable("id") Long id) {
         employeeService.deleteEmployee(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 }
